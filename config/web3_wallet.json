@@ -1,0 +1,11 @@
+{
+  "connected": true,
+  "address": "0x71C8364420A96B35f9040000A14e63D54244013d",
+  "chain_id": "0xa4b1",
+  "chain_name": "Arbitrum One",
+  "balance_eth": 0.54,
+  "balance_usdc": 1200.0,
+  "protocols_active": [
+    "Aave v3 (Arbitrum)"
+  ]
+}

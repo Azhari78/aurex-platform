@@ -1,0 +1,15 @@
+[Unit]
+Description=AUREX Master Platform Trading Terminal
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/aurex-master-platform
+Environment=PYTHONPATH=/opt/aurex-master-platform/src
+ExecStart=/opt/aurex-master-platform/venv/bin/python3 -m uvicorn aurex.dashboard.app:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

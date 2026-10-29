@@ -1,0 +1,3305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>AUREX Master Platform v1.3.1 | Institutional Trading Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #06080e;
+      --bg-card: rgba(14, 19, 31, 0.85);
+      --bg-card-hover: rgba(19, 26, 43, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 242, 254, 0.25);
+      --neon-cyan: #00f2fe;
+      --neon-blue: #3b82f6;
+      --neon-purple: #8b5cf6;
+      --neon-green: #10b981;
+      --neon-red: #f43f5e;
+      --neon-amber: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --font-ui: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(0, 242, 254, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.06) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(6, 8, 14, 0.95), rgba(6, 8, 14, 0.98));
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      padding: 18px 24px 40px;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+
+    .container { max-width: 1600px; margin: 0 auto; }
+
+    /* Top Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, #2563eb 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #040810;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      position: relative;
+    }
+
+    .brand-icon::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--neon-cyan), transparent);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    .brand-info h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      background: linear-gradient(120deg, #fff 40%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 10px var(--neon-green);
+      animation: pulse 1.8s infinite;
+      display: inline-block;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 24px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-paper {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--neon-green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-live-lock {
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--neon-red);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .badge-cyan {
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-ui);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+      user-select: none;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-kill {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--neon-red);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.15);
+    }
+
+    .btn-kill:hover {
+      background: var(--neon-red);
+      color: #fff;
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, #2563eb 100%);
+      color: #060a12;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-icon-only {
+      padding: 9px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+    }
+
+    .btn-icon-only:hover {
+      color: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+    }
+
+    /* Ticker Tape */
+    .ticker-stream {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 22px;
+      scrollbar-width: none;
+    }
+
+    .ticker-stream::-webkit-scrollbar { display: none; }
+
+    .ticker-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-width: 175px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .ticker-box:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-2px);
+    }
+
+    .ticker-pair {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ticker-rate {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .ticker-diff {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .diff-up { color: var(--neon-green); }
+    .diff-down { color: var(--neon-red); }
+
+    /* KPI Metrics Cards */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .metric-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .metric-card:hover::before { opacity: 1; }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .metric-badge-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+    }
+
+    .metric-number {
+      font-size: 30px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .metric-footer {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Grid Workspace */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title-icon {
+      font-size: 18px;
+    }
+
+    /* Proposals */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-pill.active {
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--neon-cyan);
+      border-color: rgba(0, 242, 254, 0.3);
+    }
+
+    .proposals-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .proposal-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .proposal-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(0, 242, 254, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .prop-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .prop-asset {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prop-badges {
+      display: flex;
+      gap: 6px;
+    }
+
+    .badge-dir-buy { background: rgba(16, 185, 129, 0.15); color: var(--neon-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-dir-sell { background: rgba(244, 63, 94, 0.15); color: var(--neon-red); border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-dir-lend { background: rgba(139, 92, 246, 0.15); color: var(--neon-purple); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+    .prop-price-ladder {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .ladder-item { display: flex; flex-direction: column; gap: 2px; }
+    .ladder-label { color: var(--text-muted); font-size: 10px; }
+    .ladder-val { font-weight: 700; color: #fff; }
+
+    .prop-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+
+    .prop-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 12px;
+    }
+
+    .prop-metrics {
+      display: flex;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .prop-metric-pill {
+      color: var(--neon-cyan);
+      background: rgba(0, 242, 254, 0.06);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    /* Teacher Lab Panel */
+    .teacher-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 18px;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .flow-step.active {
+      color: var(--neon-cyan);
+    }
+
+    .flow-step.active .step-icon {
+      background: var(--neon-cyan);
+      color: #040810;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    }
+
+    .step-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .experiment-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .exp-title {
+      font-weight: 700;
+      color: var(--neon-purple);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* AI Live Stream Terminal */
+    .terminal-box {
+      background: #03060a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.6;
+      color: #94a3b8;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 14px;
+      position: relative;
+    }
+
+    .term-line {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .term-time { color: var(--text-muted); }
+    .term-tag { color: var(--neon-cyan); font-weight: 600; }
+    .term-text { color: #e2e8f0; }
+
+    /* Bottom Execution Log */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .inst-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    .inst-table th {
+      text-align: left;
+      padding: 12px 14px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .inst-table td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: #e2e8f0;
+    }
+
+    .inst-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Toast Notification */
+    #toastContainer {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: rgba(14, 21, 35, 0.95);
+      border: 1px solid var(--neon-cyan);
+      backdrop-filter: blur(16px);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: #fff;
+      font-size: 13px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 12, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-box {
+      background: #0d1322;
+      border: 1px solid var(--neon-cyan);
+      box-shadow: 0 0 40px rgba(0, 242, 254, 0.2);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-head h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+
+    .dir-toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .dir-btn {
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-align: center;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+
+    .dir-btn-buy {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--neon-green);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .dir-btn-buy.active {
+      background: var(--neon-green);
+      color: #040810;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .dir-btn-sell {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--neon-red);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .dir-btn-sell.active {
+      background: var(--neon-red);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+    }
+
+    .btn-close-pos {
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(244, 63, 94, 0.18);
+      color: var(--neon-red);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-close-pos:hover {
+      background: var(--neon-red);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
+    }
+
+    /* Live Charting Engine Styles */
+    .chart-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(13, 19, 34, 0.85);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .chart-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chart-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-feed-badge {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--neon-green);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-feed-badge .live-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-green);
+      animation: pulse 1.2s infinite;
+    }
+
+    .chart-pills-bar {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      padding: 12px 20px;
+      background: #080d1a !important;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .chart-symbol-pill {
+      background: #0f172a !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #cbd5e1 !important;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+    }
+
+    .chart-symbol-pill:hover {
+      background: rgba(0, 242, 254, 0.15) !important;
+      border-color: var(--neon-cyan) !important;
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+
+    .chart-symbol-pill.active {
+      background: rgba(0, 242, 254, 0.25) !important;
+      border-color: var(--neon-cyan) !important;
+      color: var(--neon-cyan) !important;
+      box-shadow: 0 0 16px rgba(0, 242, 254, 0.4) !important;
+    }
+
+    .chart-symbol-pill .pill-price {
+      font-size: 12px;
+      opacity: 0.9;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .chart-frame-box {
+      width: 100%;
+      height: 720px;
+      min-height: 500px;
+      background: #080c14;
+      position: relative;
+      transition: height 0.3s ease;
+    }
+
+    .btn-height-toggle {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-height-toggle:hover, .btn-height-toggle.active {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    /* Flash animations for real-time live price ticks */
+    @keyframes tickGreen {
+      0% { color: #10b981; transform: scale(1.04); }
+      100% { color: inherit; transform: scale(1); }
+    }
+    @keyframes tickRed {
+      0% { color: #f43f5e; transform: scale(1.04); }
+      100% { color: inherit; transform: scale(1); }
+    }
+    .tick-up { animation: tickGreen 0.7s ease-out; }
+    .tick-down { animation: tickRed 0.7s ease-out; }
+
+    .ticker-box {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ticker-box:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Institutional Multi-Workspace Navigation Bar */
+    .nav-workspace-bar {
+      display: flex;
+      gap: 12px;
+      margin: 18px 0 24px;
+      background: rgba(13, 19, 34, 0.85);
+      border: 1px solid var(--border-glow);
+      border-radius: 16px;
+      padding: 8px 12px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-workspace-bar::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      user-select: none;
+      outline: none;
+    }
+
+    .nav-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-tab.active {
+      background: rgba(0, 242, 254, 0.14) !important;
+      border-color: var(--neon-cyan) !important;
+      color: #fff !important;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.25) !important;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    .nav-pill-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .nav-tab.active .nav-pill-badge {
+      background: rgba(0, 242, 254, 0.25);
+      color: var(--neon-cyan);
+    }
+
+    /* Workspace Sections */
+    .workspace-section {
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .workspace-section.active {
+      display: block;
+    }
+
+    /* Floating AIA Chat Button (FAB) */
+    .btn-chat-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border: 1px solid rgba(0, 242, 254, 0.6);
+      box-shadow: 0 8px 30px rgba(0, 242, 254, 0.35);
+      border-radius: 50px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-chat-fab:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(0, 242, 254, 0.5);
+    }
+
+    .chat-fab-badge {
+      background: #10b981;
+      color: #040810;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    /* AIA Interactive Chat Drawer */
+    .chat-drawer {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 460px;
+      max-width: 94vw;
+      height: 600px;
+      max-height: 84vh;
+      background: rgba(11, 17, 29, 0.96);
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 242, 254, 0.2);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .chat-drawer.open {
+      display: flex;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.25), rgba(168, 85, 247, 0.25));
+      border: 1px solid var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+
+    .chat-title-text h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .chat-title-text span {
+      font-size: 11px;
+      color: #10b981;
+      font-family: var(--font-mono);
+    }
+
+    .chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      max-width: 88%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .chat-bubble.bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      color: #e2e8f0;
+      border-top-left-radius: 4px;
+    }
+
+    .chat-bubble.bot b, .chat-bubble.bot strong {
+      color: var(--neon-cyan);
+    }
+
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.4));
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+
+    .chat-chips-tray {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .chat-chip {
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      color: #cbd5e1;
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chat-chip:hover {
+      background: rgba(0, 242, 254, 0.25);
+      color: #fff;
+      border-color: var(--neon-cyan);
+    }
+
+    .chat-footer {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+  </style>
+  <!-- TradingView Advanced Real-Time Charting Library -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+  <div id="toastContainer"></div>
+
+  <div class="container">
+    <!-- Top Header -->
+    <header>
+      <div class="brand-group">
+        <div class="brand-icon">A</div>
+        <div class="brand-info">
+          <h1>AUREX INSTITUTIONAL TERMINAL</h1>
+          <p><span class="pulse-dot"></span> AUDITED ARCHITECTURE v1.3.1 • AIA BRAIN + TEACHER SUPERVISOR</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <span class="badge badge-paper">● PAPER VERIFIED</span>
+        <span class="badge badge-live-lock">🔒 LIVE LOCKED</span>
+        <span class="badge badge-cyan" id="clockUtc">UTC 00:00:00</span>
+
+        <div id="mt5StatusPill" class="badge" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--neon-green); font-weight: 600; border-radius: 10px;" onclick="openMT5Modal()" title="MetaTrader 5 Demo Account Status & Controls">
+          <span style="font-size: 14px;">📊</span> <span id="mt5BadgeText">MT5 DEMO: 5057835635 ($10,000)</span>
+        </div>
+
+        <div id="metamaskStatusPill" class="badge" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: rgba(246, 133, 27, 0.12); border: 1px solid rgba(246, 133, 27, 0.35); color: #f6851b; font-weight: 600; border-radius: 10px;" onclick="handleMetaMaskClick()" title="Sambung Dompet Web3 MetaMask">
+          <span style="font-size: 14px;">🦊</span> <span id="metamaskBadgeText">Sambung MetaMask</span>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="openDepositModal()" title="Deposit Funds to Vault">💵 Deposit</button>
+        <button class="btn btn-primary" onclick="openOrderModal()" title="Place Manual Buy or Sell Order">➕ New Order</button>
+        <button class="btn btn-secondary" style="border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);" onclick="toggleChatDrawer()" title="Sembang terus dengan AIA Assistant">💬 Sembang AIA</button>
+        <button id="soundBtn" class="btn btn-icon-only" onclick="toggleAudio()" title="Toggle Terminal Audio">🔊</button>
+        <button id="killBtn" class="btn btn-kill" onclick="toggleKillSwitch()">🛑 KILL SWITCH</button>
+        <button class="btn btn-primary" onclick="runCompleteCycle()">⚡ Autopilot</button>
+      </div>
+    </header>
+
+    <!-- Market Ticker Tape with Click-to-Chart -->
+    <div class="ticker-stream" id="tickerBar">
+      <div class="ticker-box" onclick="switchChart('BTC/USD', 'BINANCE:BTCUSDT', 'CRYPTO')" title="Click to view BTC/USD Live Chart">
+        <div class="ticker-pair"><span>₿ BTC/USD</span> <span class="ticker-diff diff-up" id="diffBtc">+2.4%</span></div>
+        <div class="ticker-rate" id="tickBtc">$82,000.00</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('ETH/USD', 'BINANCE:ETHUSDT', 'CRYPTO')" title="Click to view ETH/USD Live Chart">
+        <div class="ticker-pair"><span>Ξ ETH/USD</span> <span class="ticker-diff diff-up" id="diffEth">+3.1%</span></div>
+        <div class="ticker-rate" id="tickEth">$2,415.00</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('SOL/USD', 'BINANCE:SOLUSDT', 'CRYPTO')" title="Click to view SOL/USD Live Chart">
+        <div class="ticker-pair"><span>◎ SOL/USD</span> <span class="ticker-diff diff-up" id="diffSol">+4.8%</span></div>
+        <div class="ticker-rate" id="tickSol">$104.50</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('LINK/USD', 'BINANCE:LINKUSDT', 'CRYPTO')" title="Click to view LINK/USD Live Chart">
+        <div class="ticker-pair"><span>🔗 LINK/USD</span> <span class="ticker-diff diff-up" id="diffLink">+1.9%</span></div>
+        <div class="ticker-rate" id="tickLink">$12.05</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('EUR/USD', 'FX:EURUSD', 'FX')" title="Click to view EUR/USD Live Chart">
+        <div class="ticker-pair"><span>💶 EUR/USD</span> <span class="ticker-diff diff-down" id="diffEur">-0.1%</span></div>
+        <div class="ticker-rate" id="tickEur">1.0850</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('USD/JPY', 'FX:USDJPY', 'FX')" title="Click to view USD/JPY Live Chart">
+        <div class="ticker-pair"><span>💴 USD/JPY</span> <span class="ticker-diff diff-up" id="diffJpy">+0.2%</span></div>
+        <div class="ticker-rate" id="tickJpy">151.20</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('AAVE/USD', 'BINANCE:AAVEUSDT', 'DEFI')" title="Click to view AAVE Live Chart">
+        <div class="ticker-pair"><span>👻 Aave v3</span> <span class="ticker-diff diff-up">+8.2% APY</span></div>
+        <div class="ticker-rate" id="tickAave">$145.00</div>
+      </div>
+      <div class="ticker-box" onclick="switchChart('UNI/USD', 'BINANCE:UNIUSDT', 'DEFI')" title="Click to view UNI Live Chart">
+        <div class="ticker-pair"><span>🦄 UniV3</span> <span class="ticker-diff diff-up">+14.5% APY</span></div>
+        <div class="ticker-rate" id="tickUni">$7.80</div>
+      </div>
+    </div>
+
+    <!-- Institutional Multi-Workspace Navigation Bar -->
+    <nav class="nav-workspace-bar">
+      <button class="nav-tab active" id="tabBtn-trading" onclick="switchWorkspace('trading')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Live Trading Terminal</span>
+        <span class="nav-pill-badge" id="navPosCount">0 Open</span>
+      </button>
+      <button class="nav-tab" id="tabBtn-brain" onclick="switchWorkspace('brain')">
+        <span class="nav-icon">🧠</span>
+        <span class="nav-text">AIA Brain Scanner</span>
+        <span class="nav-pill-badge" id="navPropCount">AI Radar</span>
+      </button>
+      <button class="nav-tab" id="tabBtn-teacher" onclick="switchWorkspace('teacher')">
+        <span class="nav-icon">🎓</span>
+        <span class="nav-text">AIA Teacher Lab</span>
+        <span class="nav-pill-badge">Supervisor</span>
+      </button>
+      <button class="nav-tab" id="tabBtn-treasury" onclick="switchWorkspace('treasury')">
+        <span class="nav-icon">🏦</span>
+        <span class="nav-text">Treasury & Audit Vault</span>
+        <span class="nav-pill-badge">ACID Ledger</span>
+      </button>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 1: LIVE TRADING & ADVANCED REAL-TIME CHARTS    -->
+    <!-- ======================================================== -->
+    <div class="workspace-section active" id="workspace-trading">
+      <!-- Real-Time Institutional Live Charting Center -->
+      <div class="chart-panel" id="mainChartPanel">
+        <div class="chart-header">
+          <div class="chart-title-group">
+            <div class="chart-title">
+              <span style="color: var(--neon-cyan); font-size: 18px;">📈</span>
+              <span id="currentChartTitle">BTC/USD Live Real-Time Market Stream</span>
+            </div>
+            <div class="chart-feed-badge">
+              <span class="live-dot"></span>
+              <span>DIRECT EXCHANGE STREAM • 0s DELAY (REAL-TIME TICKS)</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">HEIGHT:</span>
+            <button class="btn-height-toggle" onclick="setChartHeight(600)">600px</button>
+            <button class="btn-height-toggle active" id="btnH720" onclick="setChartHeight(720)">720px</button>
+            <button class="btn-height-toggle" onclick="setChartHeight(900)">900px</button>
+            <button class="btn-height-toggle" onclick="toggleChartFullscreen()" title="Toggle Fullscreen">⛶ Fullscreen</button>
+            <button class="btn btn-secondary" onclick="openOrderForCurrentChart()" title="Quick Trade This Asset">
+              ⚡ Trade This Asset
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Symbol Switcher Pills Bar -->
+        <div class="chart-pills-bar" id="chartPillsBar">
+          <button class="chart-symbol-pill active" data-symbol="BTC/USD" data-tv="BINANCE:BTCUSDT" data-market="CRYPTO" onclick="switchChart('BTC/USD', 'BINANCE:BTCUSDT', 'CRYPTO')">
+            <span>₿ BTC/USD</span>
+            <span class="pill-price" id="pillPriceBTC">$82,000.00</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="ETH/USD" data-tv="BINANCE:ETHUSDT" data-market="CRYPTO" onclick="switchChart('ETH/USD', 'BINANCE:ETHUSDT', 'CRYPTO')">
+            <span>Ξ ETH/USD</span>
+            <span class="pill-price" id="pillPriceETH">$2,415.00</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="SOL/USD" data-tv="BINANCE:SOLUSDT" data-market="CRYPTO" onclick="switchChart('SOL/USD', 'BINANCE:SOLUSDT', 'CRYPTO')">
+            <span>◎ SOL/USD</span>
+            <span class="pill-price" id="pillPriceSOL">$104.50</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="LINK/USD" data-tv="BINANCE:LINKUSDT" data-market="CRYPTO" onclick="switchChart('LINK/USD', 'BINANCE:LINKUSDT', 'CRYPTO')">
+            <span>🔗 LINK/USD</span>
+            <span class="pill-price" id="pillPriceLINK">$12.05</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="AVAX/USD" data-tv="BINANCE:AVAXUSDT" data-market="CRYPTO" onclick="switchChart('AVAX/USD', 'BINANCE:AVAXUSDT', 'CRYPTO')">
+            <span>🔺 AVAX/USD</span>
+            <span class="pill-price" id="pillPriceAVAX">$24.80</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="EUR/USD" data-tv="FX:EURUSD" data-market="FX" onclick="switchChart('EUR/USD', 'FX:EURUSD', 'FX')">
+            <span>💶 EUR/USD</span>
+            <span class="pill-price" id="pillPriceEUR">1.0850</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="GBP/USD" data-tv="FX:GBPUSD" data-market="FX" onclick="switchChart('GBP/USD', 'FX:GBPUSD', 'FX')">
+            <span>💷 GBP/USD</span>
+            <span class="pill-price" id="pillPriceGBP">1.2980</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="USD/JPY" data-tv="FX:USDJPY" data-market="FX" onclick="switchChart('USD/JPY', 'FX:USDJPY', 'FX')">
+            <span>💴 USD/JPY</span>
+            <span class="pill-price" id="pillPriceJPY">151.20</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="AUD/USD" data-tv="FX:AUDUSD" data-market="FX" onclick="switchChart('AUD/USD', 'FX:AUDUSD', 'FX')">
+            <span>🇦🇺 AUD/USD</span>
+            <span class="pill-price" id="pillPriceAUD">0.6680</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="UNI/USD" data-tv="BINANCE:UNIUSDT" data-market="DEFI" onclick="switchChart('UNI/USD', 'BINANCE:UNIUSDT', 'DEFI')">
+            <span>🦄 UNI/USD</span>
+            <span class="pill-price" id="pillPriceUNI">$7.80</span>
+          </button>
+          <button class="chart-symbol-pill" data-symbol="AAVE/USD" data-tv="BINANCE:AAVEUSDT" data-market="DEFI" onclick="switchChart('AAVE/USD', 'BINANCE:AAVEUSDT', 'DEFI')">
+            <span>👻 AAVE/USD</span>
+            <span class="pill-price" id="pillPriceAAVE">$145.00</span>
+          </button>
+        </div>
+
+        <!-- TradingView Interactive Canvas Container -->
+        <div class="chart-frame-box" id="tvChartContainer">
+          <div id="tv_chart_target" style="height: 100%; width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Panel: Active Open Positions & Take-Profit / Close Terminal -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-title-icon">⚡</span> Active Open Positions & Real-Time PnL Tracker
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="badge badge-paper" id="openCountBadge">0 POSITIONS ACTIVE</span>
+            <span class="badge badge-cyan" id="floatingPnlBadge">Floating PnL: $0.00</span>
+            <span class="badge badge-paper" id="realizedPnlBadge">Realized: $0.00</span>
+            <button class="btn btn-primary" onclick="openOrderModal()">➕ New Order (Buy / Sell)</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="inst-table">
+            <thead>
+              <tr>
+                <th>Position ID</th>
+                <th>Market</th>
+                <th>Symbol</th>
+                <th>Direction</th>
+                <th>Entry Price</th>
+                <th>Live Price</th>
+                <th>Invested ($)</th>
+                <th>Floating PnL</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="positionsTable">
+              <tr>
+                <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                  No active open positions. Execute an AIA proposal or click <b>"➕ New Order"</b> to open a position.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 2: AIA BRAIN DELIBERATION & OPPORTUNITY SCAN   -->
+    <!-- ======================================================== -->
+    <div class="workspace-section" id="workspace-brain">
+      <div class="panel" style="margin-bottom: 24px;">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-title-icon">🧠</span> AIA AI Brain Deliberation Center
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" onclick="scanMarkets()">⚡ Scan Universe</button>
+          </div>
+        </div>
+
+        <div class="filter-tabs">
+          <span class="tab-pill active" onclick="filterProposals('ALL')">All Markets</span>
+          <span class="tab-pill" onclick="filterProposals('CRYPTO')">Crypto Spot</span>
+          <span class="tab-pill" onclick="filterProposals('FX')">Forex MHE</span>
+          <span class="tab-pill" onclick="filterProposals('DEFI')">DeFi Multi-Chain</span>
+        </div>
+
+        <div class="proposals-container" id="proposalsList">
+          <p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 40px 0;">
+            Click <b>"Scan Universe"</b> to deliberate market opportunities across FX, Crypto, and DeFi engines.
+          </p>
+        </div>
+      </div>
+
+      <!-- AI Neural Deliberation Terminal (Full Width in Brain Workspace) -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-title-icon">⚡</span> AIA Cognitive Neural Stream Terminal
+          </div>
+          <span class="badge badge-cyan">AUTONOMOUS AUDITED REASONING</span>
+        </div>
+        <div class="terminal-box" id="neuralTerminal" style="height: 380px;">
+          <div class="term-line">
+            <span class="term-time">[SYS]</span>
+            <span class="term-tag">INIT:</span>
+            <span class="term-text">AUREX v1.3.1 Runtime active. Global Governor Policy Armed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 3: AIA TEACHER LABORATORY & STRATEGY SANDBOX   -->
+    <!-- ======================================================== -->
+    <div class="workspace-section" id="workspace-teacher">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-title-icon">🎓</span> AIA Teacher Laboratory & Hypothesis Studio
+          </div>
+          <button class="btn btn-primary" onclick="runTeacherCycle()">🔬 Research Loop</button>
+        </div>
+
+        <!-- Controlled Loop Breadcrumb Flow -->
+        <div class="teacher-flow">
+          <div class="flow-step active" id="stObserve"><div class="step-icon">1</div>Observe</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step active" id="stDiagnose"><div class="step-icon">2</div>Diagnose</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step active" id="stHypo"><div class="step-icon">3</div>Hypothesis</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step active" id="stSandbox"><div class="step-icon">4</div>Sandbox</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step active" id="stValidate"><div class="step-icon">5</div>Validate</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step active" id="stApprove"><div class="step-icon">6</div>Approve</div>
+        </div>
+
+        <div id="teacherOutput">
+          <div class="experiment-card" id="expCard">
+            <div class="exp-title">
+              <span>HYPOTHESIS LEDGER & EXPERIMENT TRACKER</span>
+              <span class="badge badge-paper">READY</span>
+            </div>
+            <div id="expContent" style="color: var(--text-secondary); line-height: 1.6;">
+              AIA Teacher continuously diagnoses strategy weaknesses and formulates testable improvements in sandbox isolation without risking live capital.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 4: CAPITAL TREASURY, LEDGER & AUDIT COMPLIANCE -->
+    <!-- ======================================================== -->
+    <div class="workspace-section" id="workspace-treasury">
+      <!-- 4 Primary KPI HUD Cards -->
+      <div class="metrics-row" style="margin-bottom: 24px;">
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">USD Capital Vault</span>
+            <span class="metric-badge-tag">USD VAULT</span>
+          </div>
+          <div class="metric-number" id="usdAvail">$10,000.00</div>
+          <div class="metric-footer">
+            <span id="usdReserved">Reserved: $0.00</span>
+            <span style="color: var(--neon-green);">+100% Available</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">MYR Capital Vault</span>
+            <span class="metric-badge-tag">MYR VAULT</span>
+          </div>
+          <div class="metric-number" id="myrAvail">RM25,000.00</div>
+          <div class="metric-footer">
+            <span id="myrReserved">Reserved: RM0.00</span>
+            <span style="color: var(--neon-cyan);">Treasury Backed</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">Global Governor</span>
+            <span class="metric-badge-tag">POLICY</span>
+          </div>
+          <div class="metric-number" id="govStatus" style="color: var(--neon-green);">ACTIVE</div>
+          <div class="metric-footer">
+            <span>Atomic Auth Consumption</span>
+            <span style="color: var(--neon-green);">Enforced</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">ACID Ledger Audit</span>
+            <span class="metric-badge-tag">SHA-256</span>
+          </div>
+          <div class="metric-number" id="auditStatus" style="color: var(--neon-cyan);">VERIFIED</div>
+          <div class="metric-footer">
+            <span>Hash Chain Integrity</span>
+            <span style="color: var(--neon-cyan);">100% Valid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Panel: Execution Receipts & Reconciliation -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-title-icon">📋</span> Authoritative Venue Execution & Reconciliation Log
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="badge badge-paper" id="reconBadge">Reconciliation: 100% CLEAN</span>
+            <button class="btn btn-secondary" onclick="loadReconciliation()">🔄 Sync Venue</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="inst-table">
+            <thead>
+              <tr>
+                <th>Receipt ID</th>
+                <th>Market</th>
+                <th>Symbol</th>
+                <th>Direction</th>
+                <th>Executed Price</th>
+                <th>Executed Units</th>
+                <th>Fees</th>
+                <th>Venue</th>
+                <th>Reconciliation Status</th>
+              </tr>
+            </thead>
+            <tbody id="receiptsTable">
+              <tr>
+                <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                  No orders executed in this session. Click <b>"Scan Universe"</b> in AIA Brain to execute proposals.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Order Modal -->
+  <div class="modal-backdrop" id="orderModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>➕ New Order Execution</h3>
+        <button class="btn btn-icon-only" onclick="closeOrderModal()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>Select Market & Asset</label>
+        <select class="form-select" id="orderSymbol">
+          <option value="BTC/USD" data-market="CRYPTO">Bitcoin (BTC/USD)</option>
+          <option value="ETH/USD" data-market="CRYPTO">Ethereum (ETH/USD)</option>
+          <option value="SOL/USD" data-market="CRYPTO">Solana (SOL/USD)</option>
+          <option value="LINK/USD" data-market="CRYPTO">Chainlink (LINK/USD)</option>
+          <option value="EUR/USD" data-market="FX">Euro / Dollar (EUR/USD)</option>
+          <option value="GBP/USD" data-market="FX">British Pound (GBP/USD)</option>
+          <option value="USD/JPY" data-market="FX">Dollar / Yen (USD/JPY)</option>
+          <option value="USDC-Aave-Arbitrum" data-market="DEFI">Aave Arbitrum (USDC Lending)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Order Direction</label>
+        <div class="dir-toggle-group">
+          <div class="dir-btn dir-btn-buy active" id="btnBuy" onclick="selectDirection('BUY')">🟢 BUY / LONG</div>
+          <div class="dir-btn dir-btn-sell" id="btnSell" onclick="selectDirection('SELL')">🔴 SELL / SHORT</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Principal Amount ($ USD)</label>
+        <input type="number" class="form-input" id="orderAmount" value="250.00" min="10" max="1500" step="10">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 24px;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex: 2;" onclick="submitManualOrder()">🚀 Submit to Governor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal-backdrop" id="depositModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>💵 Deposit Capital to Vault</h3>
+        <button class="btn btn-icon-only" onclick="closeDepositModal()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>Currency Vault</label>
+        <select class="form-select" id="depositCurr">
+          <option value="USD">USD Capital Vault ($)</option>
+          <option value="MYR">MYR Capital Vault (RM)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Deposit Amount</label>
+        <input type="number" class="form-input" id="depositAmount" value="1000.00" min="50" step="50">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 24px;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeDepositModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex: 2;" onclick="submitDeposit()">💳 Confirm Deposit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MetaTrader 5 (MT5) Modal -->
+  <div class="modal-backdrop" id="mt5Modal">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">📊</span>
+          <div>
+            <h3 style="margin: 0; font-size: 16px;">MetaTrader 5 (MT5) Demo Account</h3>
+            <p style="margin: 2px 0 0; font-size: 11px; color: var(--neon-green); display: flex; align-items: center; gap: 5px;">
+              <span class="pulse-dot" style="background: var(--neon-green); width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span> 
+              <span id="mt5ConnectionStatus">TERSAMBUNG KE METAQUOTES-DEMO</span>
+            </p>
+          </div>
+        </div>
+        <button class="btn btn-icon-only" onclick="closeMT5Modal()">✕</button>
+      </div>
+
+      <!-- Account Overview Grid -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 12px; border: 1px solid var(--border-subtle);">
+        <div>
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Pemegang</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary); margin-top: 2px;" id="mt5AccName">Fauzan Azhari</div>
+        </div>
+        <div>
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">No Login / Server</div>
+          <div style="font-size: 12px; font-family: var(--font-mono); font-weight: 600; color: var(--neon-cyan); margin-top: 2px;" id="mt5AccLogin">5057835635</div>
+        </div>
+        <div>
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Baki (Balance)</div>
+          <div style="font-size: 14px; font-family: var(--font-mono); font-weight: 700; color: var(--neon-green); margin-top: 2px;" id="mt5Balance">$10,000.00</div>
+        </div>
+        <div>
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Ekuiti (Equity)</div>
+          <div style="font-size: 14px; font-family: var(--font-mono); font-weight: 700; color: var(--neon-cyan); margin-top: 2px;" id="mt5Equity">$10,000.00</div>
+        </div>
+      </div>
+
+      <!-- Open Positions Section -->
+      <div style="margin-top: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 0;">Posisi Terbuka MT5</h4>
+          <span style="font-size: 11px; color: var(--text-muted);" id="mt5PosCount">0 Posisi</span>
+        </div>
+        <div id="mt5PositionsContainer" style="max-height: 140px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px;">
+          <div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 12px;">Tiada posisi terbuka sekarang.</div>
+        </div>
+      </div>
+
+      <!-- Quick Manual Trade Execution on MT5 -->
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+        <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 0 0 10px;">Hantar Pesanan Terus ke MT5</h4>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size: 10px; color: var(--text-muted);">Simbol</label>
+            <select class="form-select" id="mt5TradeSymbol" style="padding: 6px; font-size: 12px;">
+              <option value="EURUSD">EUR/USD (Forex)</option>
+              <option value="GBPUSD">GBP/USD (Forex)</option>
+              <option value="USDJPY">USD/JPY (Forex)</option>
+              <option value="XAUUSD">XAU/USD (Gold)</option>
+              <option value="BTCUSD">BTC/USD (Crypto)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 10px; color: var(--text-muted);">Lot (Volume)</label>
+            <input type="number" class="form-input" id="mt5TradeLots" value="0.10" min="0.01" step="0.01" style="padding: 6px; font-size: 12px;">
+          </div>
+          <div style="display: flex; align-items: flex-end;">
+            <button class="btn btn-primary" style="width: 100%; padding: 7px 10px; font-size: 11px; background: rgba(16, 185, 129, 0.2); border: 1px solid var(--neon-green); color: var(--neon-green);" onclick="executeMT5Trade('BUY')">🟢 BUY</button>
+          </div>
+          <div style="display: flex; align-items: flex-end;">
+            <button class="btn btn-primary" style="width: 100%; padding: 7px 10px; font-size: 11px; background: rgba(244, 63, 94, 0.2); border: 1px solid var(--neon-red); color: var(--neon-red);" onclick="executeMT5Trade('SELL')">🔴 SELL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Settings Toggle -->
+      <details style="margin-top: 16px; font-size: 11px; color: var(--text-muted);">
+        <summary style="cursor: pointer; user-select: none;">⚙️ Tetapan Maklumat Akaun MT5</summary>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px;">
+          <div>
+            <label style="font-size: 10px;">Login</label>
+            <input type="number" class="form-input" id="mt5InputLogin" value="5057835635" style="padding: 6px; font-size: 11px;">
+          </div>
+          <div>
+            <label style="font-size: 10px;">Password</label>
+            <input type="password" class="form-input" id="mt5InputPassword" value="-7SuFcBc" style="padding: 6px; font-size: 11px;">
+          </div>
+          <div>
+            <label style="font-size: 10px;">Server</label>
+            <input type="text" class="form-input" id="mt5InputServer" value="MetaQuotes-Demo" style="padding: 6px; font-size: 11px;">
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="margin-top: 8px; padding: 6px 12px; font-size: 11px;" onclick="reconnectMT5Account()">🔄 Sambung Semula</button>
+      </details>
+    </div>
+  </div>
+
+  <!-- MetaMask Web3 Wallet Modal -->
+  <div class="modal-backdrop" id="metamaskModal">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 26px;">🦊</span>
+          <div>
+            <h3 style="margin: 0; font-size: 16px;">Dompet Web3 MetaMask</h3>
+            <p style="margin: 2px 0 0; font-size: 11px; color: #f6851b; display: flex; align-items: center; gap: 5px;">
+              <span class="pulse-dot" style="background: #f6851b; width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span>
+              <span id="mmModalStatusText">TERHUBUNG DENGAN BROWSER</span>
+            </p>
+          </div>
+        </div>
+        <button class="btn btn-icon-only" onclick="closeMetaMaskModal()">✕</button>
+      </div>
+
+      <!-- Wallet Overview -->
+      <div style="background: rgba(246, 133, 27, 0.05); border: 1px solid rgba(246, 133, 27, 0.25); border-radius: 12px; padding: 16px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Alamat Dompet (Account)</div>
+            <div style="font-size: 13px; font-family: var(--font-mono); font-weight: 700; color: #fff; margin-top: 4px; word-break: break-all;" id="mmFullAddress">0x...</div>
+          </div>
+          <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="copyWalletAddress()">📋 Salin</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06);">
+          <div>
+            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Rangkaian Semasa</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--neon-cyan); margin-top: 2px;" id="mmNetworkName">Arbitrum One</div>
+          </div>
+          <div>
+            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Baki Native (ETH)</div>
+            <div style="font-size: 15px; font-family: var(--font-mono); font-weight: 700; color: var(--neon-green); margin-top: 2px;" id="mmEthBalance">0.0000 ETH</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Network Switcher -->
+      <div style="margin-top: 14px;">
+        <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; display: block; margin-bottom: 8px;">Tukar Rangkaian Web3:</label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px;" onclick="switchChain('0xa4b1')">🔵 Arbitrum</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px;" onclick="switchChain('0x1')">💠 Ethereum</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px;" onclick="switchChain('0x89')">🟣 Polygon</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px;" onclick="switchChain('0x2105')">🟡 Base</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px;" onclick="switchChain('0xaa36a7')">🧪 Sepolia Testnet</button>
+        </div>
+      </div>
+
+      <!-- DeFi Protocol Integration -->
+      <div style="margin-top: 18px; padding: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; border: 1px solid var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">Aave v3 Arbitrum Yield Pool</div>
+            <div style="font-size: 11px; color: var(--neon-green);">+8.2% APY • Disambungkan ke Dompet</div>
+          </div>
+          <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px;" onclick="showToast('Sedia untuk deposit ke Aave Pool Arbitrum')">⚡ Pantau Pool</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button class="btn btn-kill" style="padding: 7px 14px; font-size: 11px;" onclick="disconnectMetaMask()">Putuskan Sambungan</button>
+        <button class="btn btn-secondary" style="padding: 7px 14px; font-size: 11px;" onclick="closeMetaMaskModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AIA Chat Button -->
+  <button id="btnOpenChat" class="btn-chat-fab" onclick="toggleChatDrawer()">
+    <span style="font-size: 18px;">🤖</span>
+    <span>Sembang AIA</span>
+    <span class="chat-fab-badge">● Online</span>
+  </button>
+
+  <!-- Interactive AIA Chat Drawer -->
+  <div class="chat-drawer" id="chatDrawer">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">🤖</div>
+        <div class="chat-title-text">
+          <h4>AIA Intelligent Assistant</h4>
+          <span>● Telemetry Live • BM / EN</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-icon-only" onclick="toggleKeyBar()" title="Tetapan Gemini AI Key (Percuma)">🔑</button>
+        <button class="btn btn-icon-only" onclick="clearChatHistory()" title="Kosongkan perbualan">🗑️</button>
+        <button class="btn btn-icon-only" onclick="toggleChatDrawer()" title="Tutup">✕</button>
+      </div>
+    </div>
+
+    <!-- Gemini Key Setting Bar -->
+    <div id="geminiKeyBar" style="display: none; padding: 12px 18px; background: rgba(0, 242, 254, 0.08); border-bottom: 1px solid rgba(0, 242, 254, 0.2); font-size: 11px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="color: var(--neon-cyan); font-weight: 700;">🔑 Aktifkan Otak AI Bebas (Gemini Key)</span>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #cbd5e1; text-decoration: underline; font-size: 10px;">Dapatkan Percuma di Google ↗</a>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <input type="password" id="inputGeminiKey" class="chat-input" placeholder="Tampal API Key Google (AIzaSy...)" style="padding: 7px 10px; font-size: 11px;">
+        <button class="btn btn-primary" onclick="saveGeminiKey()" style="padding: 7px 14px; font-size: 11px;">Simpan</button>
+      </div>
+      <div id="keySaveStatus" style="margin-top: 4px; font-size: 10px; color: var(--neon-green);"></div>
+    </div>
+
+    <div class="chat-body" id="chatMessages">
+      <!-- Welcome Message -->
+      <div class="chat-bubble bot">
+        <b>Salam sejahtera pakcik & tuan!</b> 👋<br>
+        Saya <strong>AIA (Aurex Intelligent Autonomous Agent)</strong>. Saya memantau pasaran dan menjaga modal lejar anda 24 jam sehari. Pakcik boleh tanya saya apa-apa soalan mengenai akaun, risiko, atau strategi:
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="chat-chips-tray" id="chatChipsTray">
+        <div class="chat-chip" onclick="sendQuickPrompt('Macam mana status akaun MT5 demo kita sekarang?')">📊 Status MT5 Demo</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Bagaimanakah status dompet MetaMask dan baki Web3 kita?')">🦊 Dompet MetaMask</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Berapa baki duit & untung kita sekarang?')">💵 Berapa baki & untung?</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Adakah selamat duit kita daripada lebur?')">🛡️ Selamat ke modal kita?</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Macam mana bot ni jana keuntungan?')">📈 Cara bot buat duit</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Apa fungsi butang Emergency Kill Switch?')">🛑 Apa tu Kill Switch?</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Ada beli apa-apa order sekarang di pasaran?')">🟢 Beli apa sekarang?</div>
+        <div class="chat-chip" onclick="sendQuickPrompt('Boleh ke kita keluarkan duit bila-bila masa?')">💳 Boleh keluar duit?</div>
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Tanya AIA apa-apa soalan (tekan Enter)..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+      <button class="btn btn-primary" onclick="sendChatMessage()" style="padding: 10px 16px;">Hantar 🚀</button>
+    </div>
+  </div>
+
+  <script>
+    let audioEnabled = true;
+    let audioCtx = null;
+    let currentProposals = [];
+
+    // Multi-Asset Real-Time Symbol Mapping
+    const SYMBOL_CONFIG = {
+      'BTC/USD': { tv: 'BINANCE:BTCUSDT', market: 'CRYPTO', pillId: 'pillPriceBTC', tickId: 'tickBtc', name: 'Bitcoin' },
+      'ETH/USD': { tv: 'BINANCE:ETHUSDT', market: 'CRYPTO', pillId: 'pillPriceETH', tickId: 'tickEth', name: 'Ethereum' },
+      'SOL/USD': { tv: 'BINANCE:SOLUSDT', market: 'CRYPTO', pillId: 'pillPriceSOL', tickId: 'tickSol', name: 'Solana' },
+      'LINK/USD': { tv: 'BINANCE:LINKUSDT', market: 'CRYPTO', pillId: 'pillPriceLINK', tickId: 'tickLink', name: 'Chainlink' },
+      'AVAX/USD': { tv: 'BINANCE:AVAXUSDT', market: 'CRYPTO', pillId: 'pillPriceAVAX', tickId: null, name: 'Avalanche' },
+      'EUR/USD': { tv: 'FX:EURUSD', market: 'FX', pillId: 'pillPriceEUR', tickId: 'tickEur', name: 'Euro / USD' },
+      'GBP/USD': { tv: 'FX:GBPUSD', market: 'FX', pillId: 'pillPriceGBP', tickId: null, name: 'GBP / USD' },
+      'USD/JPY': { tv: 'FX:USDJPY', market: 'FX', pillId: 'pillPriceJPY', tickId: 'tickJpy', name: 'USD / JPY' },
+      'AUD/USD': { tv: 'FX:AUDUSD', market: 'FX', pillId: 'pillPriceAUD', tickId: null, name: 'AUD / USD' },
+      'UNI/USD': { tv: 'BINANCE:UNIUSDT', market: 'DEFI', pillId: 'pillPriceUNI', tickId: 'tickUni', name: 'Uniswap' },
+      'AAVE/USD': { tv: 'BINANCE:AAVEUSDT', market: 'DEFI', pillId: 'pillPriceAAVE', tickId: 'tickAave', name: 'Aave' },
+    };
+
+    let currentChartSymbol = 'BTC/USD';
+    let currentChartTv = 'BINANCE:BTCUSDT';
+    let currentChartMarket = 'CRYPTO';
+    let tvWidgetInstance = null;
+
+    function switchWorkspace(name) {
+      playBeep('click');
+      document.querySelectorAll('.workspace-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+      const targetSec = document.getElementById(`workspace-${name}`);
+      if (targetSec) targetSec.classList.add('active');
+
+      const targetTab = document.getElementById(`tabBtn-${name}`);
+      if (targetTab) targetTab.classList.add('active');
+
+      if (name === 'trading') {
+        setTimeout(() => {
+          initTradingViewChart(currentChartSymbol, currentChartTv);
+        }, 150);
+      }
+
+      window.location.hash = name;
+      appendTerminalLog('WORKSPACE', `Switched view mode to: [${name.toUpperCase()} WORKSPACE]`);
+    }
+
+    let currentChartHeight = 720;
+
+    function setChartHeight(px) {
+      playBeep('click');
+      currentChartHeight = px;
+      const box = document.getElementById('tvChartContainer');
+      if (box) box.style.height = px + 'px';
+
+      document.querySelectorAll('.btn-height-toggle').forEach(b => {
+        b.classList.toggle('active', b.innerText.includes(px));
+      });
+
+      initTradingViewChart(currentChartSymbol, currentChartTv);
+    }
+
+    function toggleChartFullscreen() {
+      playBeep('click');
+      const panel = document.getElementById('mainChartPanel');
+      if (!document.fullscreenElement) {
+        if (panel.requestFullscreen) panel.requestFullscreen();
+        setChartHeight(window.innerHeight - 110);
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        setChartHeight(720);
+      }
+    }
+
+    function initTradingViewChart(symbolName = 'BTC/USD', tvSymbol = 'BINANCE:BTCUSDT') {
+      const container = document.getElementById('tvChartContainer');
+      if (!container) return;
+      container.innerHTML = '<div id="tv_chart_target" style="height: 100%; width: 100%;"></div>';
+
+      try {
+        if (typeof TradingView !== 'undefined') {
+          tvWidgetInstance = new TradingView.widget({
+            "autosize": true,
+            "symbol": tvSymbol,
+            "interval": "1",
+            "timezone": "Asia/Kuala_Lumpur",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#0d1322",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "save_image": false,
+            "container_id": "tv_chart_target",
+            "hide_side_toolbar": false,
+            "studies": [
+              "MASimple@tv-basicstudies"
+            ],
+            "backgroundColor": "#080c14",
+            "gridColor": "rgba(255, 255, 255, 0.04)",
+            "overrides": {
+              "mainSeriesProperties.candleStyle.upColor": "#10b981",
+              "mainSeriesProperties.candleStyle.downColor": "#f43f5e",
+              "mainSeriesProperties.candleStyle.borderUpColor": "#10b981",
+              "mainSeriesProperties.candleStyle.borderDownColor": "#f43f5e",
+              "mainSeriesProperties.candleStyle.wickUpColor": "#10b981",
+              "mainSeriesProperties.candleStyle.wickDownColor": "#f43f5e"
+            }
+          });
+        }
+      } catch (err) {
+        console.error('TradingView init error:', err);
+      }
+    }
+
+    function switchChart(symbolName, tvSymbol, marketType) {
+      if (!symbolName) return;
+      playBeep('click');
+      currentChartSymbol = symbolName;
+      currentChartTv = tvSymbol || (SYMBOL_CONFIG[symbolName] ? SYMBOL_CONFIG[symbolName].tv : 'BINANCE:BTCUSDT');
+      currentChartMarket = marketType || (SYMBOL_CONFIG[symbolName] ? SYMBOL_CONFIG[symbolName].market : 'CRYPTO');
+
+      const titleEl = document.getElementById('currentChartTitle');
+      if (titleEl) titleEl.innerText = `${symbolName} Live Real-Time Market Stream`;
+
+      document.querySelectorAll('.chart-symbol-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-symbol') === symbolName);
+      });
+
+      appendTerminalLog('CHART', `Streaming real-time exchange feed for ${symbolName} (${currentChartTv})...`);
+      initTradingViewChart(currentChartSymbol, currentChartTv);
+
+      const chartEl = document.querySelector('.chart-panel');
+      if (chartEl && window.scrollY > 400) {
+        chartEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function openOrderForCurrentChart() {
+      playBeep('click');
+      openOrderModal();
+      const sel = document.getElementById('orderSymbol');
+      if (sel) {
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === currentChartSymbol) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+
+    // Direct Exchange Real-Time WebSocket Market Stream
+    let marketWs = null;
+    const previousLivePrices = {};
+
+    function connectMarketWebSocket() {
+      try {
+        marketWs = new WebSocket('wss://stream.binance.com:9443/ws/!miniTicker@arr');
+
+        marketWs.onopen = () => {
+          console.log('Real-Time Binance Exchange WebSocket Connected.');
+          appendTerminalLog('STREAM', 'Direct Exchange WebSocket Armed (0s delay real-time tick stream).');
+        };
+
+        marketWs.onmessage = (event) => {
+          try {
+            const tickers = JSON.parse(event.data);
+            if (!Array.isArray(tickers)) return;
+
+            const map = {
+              'BTCUSDT': { sym: 'BTC/USD', pill: 'pillPriceBTC', tick: 'tickBtc', dec: 2 },
+              'ETHUSDT': { sym: 'ETH/USD', pill: 'pillPriceETH', tick: 'tickEth', dec: 2 },
+              'SOLUSDT': { sym: 'SOL/USD', pill: 'pillPriceSOL', tick: 'tickSol', dec: 2 },
+              'LINKUSDT': { sym: 'LINK/USD', pill: 'pillPriceLINK', tick: 'tickLink', dec: 4 },
+              'AVAXUSDT': { sym: 'AVAX/USD', pill: 'pillPriceAVAX', tick: null, dec: 2 },
+              'UNIUSDT': { sym: 'UNI/USD', pill: 'pillPriceUNI', tick: 'tickUni', dec: 4 },
+              'AAVEUSDT': { sym: 'AAVE/USD', pill: 'pillPriceAAVE', tick: 'tickAave', dec: 2 },
+            };
+
+            tickers.forEach(t => {
+              const item = map[t.s];
+              if (!item) return;
+
+              const livePrice = parseFloat(t.c);
+              const formattedPrice = '$' + livePrice.toLocaleString('en-US', { minimumFractionDigits: item.dec, maximumFractionDigits: item.dec });
+
+              const prevPrice = previousLivePrices[t.s] || livePrice;
+              const isUp = livePrice >= prevPrice;
+              previousLivePrices[t.s] = livePrice;
+
+              if (item.pill) {
+                const pillEl = document.getElementById(item.pill);
+                if (pillEl) {
+                  pillEl.innerText = formattedPrice;
+                  pillEl.classList.remove('tick-up', 'tick-down');
+                  void pillEl.offsetWidth;
+                  pillEl.classList.add(isUp ? 'tick-up' : 'tick-down');
+                }
+              }
+
+              if (item.tick) {
+                const tickEl = document.getElementById(item.tick);
+                if (tickEl) {
+                  tickEl.innerText = formattedPrice;
+                  tickEl.classList.remove('tick-up', 'tick-down');
+                  void tickEl.offsetWidth;
+                  tickEl.classList.add(isUp ? 'tick-up' : 'tick-down');
+                }
+              }
+            });
+          } catch (e) {
+            // ignore JSON parse errors
+          }
+        };
+
+        marketWs.onerror = () => {
+          // auto retry
+        };
+
+        marketWs.onclose = () => {
+          setTimeout(connectMarketWebSocket, 3000);
+        };
+      } catch (err) {
+        console.error('WebSocket Init failed:', err);
+      }
+    }
+
+    // Synthesize procedural audio effects using Web Audio API
+    function playBeep(type = 'click') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'alert') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.linearRampToValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+      } catch (e) {
+        // AudioContext disabled or blocked by policy
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.innerText = audioEnabled ? '🔊' : '🔇';
+      showToast(audioEnabled ? 'Audio Chimes Enabled' : 'Audio Chimes Muted');
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function appendTerminalLog(tag, text) {
+      const term = document.getElementById('neuralTerminal');
+      const timeStr = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = 'term-line';
+      div.innerHTML = `<span class="term-time">[${timeStr}]</span> <span class="term-tag">${tag}</span> <span class="term-text">${text}</span>`;
+      term.appendChild(div);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    // Live UTC Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clockUtc').innerText = 'UTC ' + now.toUTCString().split(' ')[4];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    async function refreshStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        document.getElementById('usdAvail').innerText = '$' + parseFloat(data.ledger.usd.available).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        document.getElementById('usdReserved').innerText = 'Reserved: $' + parseFloat(data.ledger.usd.reserved).toFixed(2);
+        document.getElementById('myrAvail').innerText = 'RM' + parseFloat(data.ledger.myr.available).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        document.getElementById('myrReserved').innerText = 'Reserved: RM' + parseFloat(data.ledger.myr.reserved).toFixed(2);
+
+        const killBtn = document.getElementById('killBtn');
+        const govStatus = document.getElementById('govStatus');
+        if (data.kill_switch_active) {
+          killBtn.innerText = '⚠️ HALTED (RESUME)';
+          killBtn.style.background = 'var(--neon-red)';
+          killBtn.style.color = '#fff';
+          govStatus.innerText = 'HALTED';
+          govStatus.style.color = 'var(--neon-red)';
+        } else {
+          killBtn.innerText = '🛑 KILL SWITCH';
+          killBtn.style.background = 'rgba(244, 63, 94, 0.15)';
+          killBtn.style.color = 'var(--neon-red)';
+          govStatus.innerText = 'ACTIVE';
+          govStatus.style.color = 'var(--neon-green)';
+        }
+
+        loadReconciliation();
+        loadPositions();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function toggleKillSwitch() {
+      playBeep('alert');
+      const res = await fetch('/api/kill-switch/toggle', { method: 'POST' });
+      const data = await res.json();
+      showToast(data.kill_switch_active ? 'EMERGENCY HALT TRIGGERED! Governor Locked.' : 'Kill Switch Disengaged. Governor Active.');
+      appendTerminalLog('GOVERNOR', data.kill_switch_active ? 'Kill switch engaged. Halting transactions.' : 'Kill switch disengaged.');
+      refreshStatus();
+    }
+
+    async function scanMarkets() {
+      playBeep('click');
+      const container = document.getElementById('proposalsList');
+      container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--neon-cyan);">
+          <div class="pulse-dot" style="width: 14px; height: 14px; margin-bottom: 10px;"></div>
+          <div>Scanning Crypto, FX MHE, and DeFi Engines...</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Evaluating Net EV & Risk Portfolio Caps</div>
+        </div>
+      `;
+
+      appendTerminalLog('AIA_BRAIN', 'Initiating multi-market universe sweep...');
+
+      const res = await fetch('/api/scan', { method: 'POST' });
+      const data = await res.json();
+      currentProposals = data.proposals;
+
+      appendTerminalLog('AIA_BRAIN', `Universe sweep complete: ${data.count} viable proposals passed Economics & Risk verification.`);
+      const navProp = document.getElementById('navPropCount');
+      if (navProp) navProp.innerText = `${data.count} Opps`;
+      renderProposals(currentProposals);
+    }
+
+    function filterProposals(market) {
+      playBeep('click');
+      document.querySelectorAll('.tab-pill').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (market === 'ALL') {
+        renderProposals(currentProposals);
+      } else {
+        const filtered = currentProposals.filter(p => p.target_market === market);
+        renderProposals(filtered);
+      }
+    }
+
+    function renderProposals(proposals) {
+      const container = document.getElementById('proposalsList');
+      if (!proposals || proposals.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 40px 0;">No opportunities match current filter.</p>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      proposals.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'proposal-card';
+
+        let dirClass = 'badge-dir-buy';
+        if (p.direction === 'SELL') dirClass = 'badge-dir-sell';
+        if (p.direction === 'LEND' || p.direction === 'PROVIDE_LIQUIDITY') dirClass = 'badge-dir-lend';
+
+        card.innerHTML = `
+          <div class="prop-top" style="cursor: pointer;" onclick="switchChart('${p.symbol}', null, '${p.target_market}')" title="Click to view Live Chart for ${p.symbol}">
+            <div class="prop-asset">
+              <span>${p.symbol}</span>
+              <span class="badge ${dirClass}">${p.direction}</span>
+            </div>
+            <div class="prop-badges">
+              <span class="badge badge-cyan">${p.target_market}</span>
+            </div>
+          </div>
+
+          <div class="prop-price-ladder">
+            <div class="ladder-item">
+              <span class="ladder-label">PRINCIPAL BUDGET</span>
+              <span class="ladder-val">$${parseFloat(p.budget.principal).toFixed(2)}</span>
+            </div>
+            <div class="ladder-item">
+              <span class="ladder-label">PROPOSAL DIGEST</span>
+              <span class="ladder-val">${p.proposal_digest.substring(0, 10)}...</span>
+            </div>
+            <div class="ladder-item">
+              <span class="ladder-label">MAX LOSS CAP</span>
+              <span class="ladder-val" style="color: var(--neon-red);">$${parseFloat(p.max_loss).toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div class="prop-text">${p.rationale}</div>
+
+          <div class="prop-bottom">
+            <div class="prop-metrics">
+              <span class="prop-metric-pill">STATUS: ${p.status}</span>
+            </div>
+            <button class="btn btn-primary" onclick="executeProposal('${p.request_id}', '${p.symbol}')">⚡ Authorize & Paper Trade</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function executeProposal(requestId, symbol) {
+      playBeep('click');
+      try {
+        appendTerminalLog('GOVERNOR', `Validating intent for ${requestId} (${symbol})...`);
+        const res = await fetch('/api/execute-paper/' + requestId, { method: 'POST' });
+        const data = await res.json();
+
+        playBeep('success');
+        showToast(`Trade Executed for ${symbol}! Receipt: ${data.receipt.receipt_id}`);
+        appendTerminalLog('BROKER', `Fill confirmed! Units: ${data.receipt.executed_units} @ $${data.receipt.executed_price} (Receipt: ${data.receipt.receipt_id})`);
+        appendTerminalLog('RECON', `Ledger reservation committed: ${data.reservation_id}`);
+
+        refreshStatus();
+        scanMarkets();
+      } catch (err) {
+        playBeep('alert');
+        alert('Execution failed: ' + err.message);
+      }
+    }
+
+    async function runTeacherCycle() {
+      playBeep('click');
+      appendTerminalLog('TEACHER', 'Starting controlled learning pipeline (Observe ➔ Diagnose ➔ Sandbox)...');
+      
+      const res = await fetch('/api/teacher/cycle', { method: 'POST' });
+      const data = await res.json();
+      const exp = data.experiment;
+
+      playBeep('success');
+      showToast(`Teacher Experiment Validated! Sharpe +${(exp.experiment_sharpe - exp.baseline_sharpe).toFixed(2)}`);
+
+      appendTerminalLog('TEACHER', `Hypothesis ${exp.hypothesis_id}: ${exp.hypothesis_statement}`);
+      appendTerminalLog('TEACHER', `Validation Result: ${exp.validation_status} (Sharpe: ${exp.baseline_sharpe} ➔ ${exp.experiment_sharpe}, Risk Δ: ${exp.risk_delta_pct*100}%)`);
+
+      const content = document.getElementById('expContent');
+      content.innerHTML = `
+        <div style="margin-bottom: 6px;"><b style="color: var(--neon-cyan);">Hypothesis:</b> ${exp.hypothesis_id}</div>
+        <div style="margin-bottom: 6px;"><b>Statement:</b> ${exp.hypothesis_statement}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
+          <div>Baseline Sharpe: <b style="color:#fff;">${exp.baseline_sharpe}</b></div>
+          <div>Exp Sharpe: <b style="color: var(--neon-green);">${exp.experiment_sharpe}</b></div>
+          <div>Risk Delta: <b style="color: var(--neon-cyan);">${exp.risk_delta_pct*100}%</b></div>
+          <div>Validation: <b style="color: var(--neon-green);">${exp.validation_status}</b></div>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted);">Provenance SHA-256: ${exp.provenance_hash.substring(0, 24)}...</div>
+        <div style="margin-top: 4px; color: var(--neon-green); font-size: 11px;">✓ Change-Control Approved by: ${exp.approved_by}</div>
+      `;
+    }
+
+    async function runCompleteCycle() {
+      playBeep('click');
+      appendTerminalLog('AUTO_PILOT', 'Launching Full Autonomous Cycle...');
+      await scanMarkets();
+      if (currentProposals.length > 0) {
+        await executeProposal(currentProposals[0].request_id, currentProposals[0].symbol);
+        await runTeacherCycle();
+      }
+    }
+
+    async function loadReconciliation() {
+      const res = await fetch('/api/reconciliation');
+      const data = await res.json();
+      const tbody = document.getElementById('receiptsTable');
+
+      if (!data.receipts || data.receipts.length === 0) return;
+
+      tbody.innerHTML = '';
+      data.receipts.forEach(r => {
+        const tr = document.createElement('tr');
+        let dirClass = 'badge-dir-buy';
+        if (r.direction === 'SELL') dirClass = 'badge-dir-sell';
+        if (r.direction === 'LEND' || r.direction === 'PROVIDE_LIQUIDITY') dirClass = 'badge-dir-lend';
+
+        tr.innerHTML = `
+          <td><span style="font-weight:700; color:var(--neon-cyan);">${r.receipt_id}</span></td>
+          <td><span class="badge badge-cyan">${r.symbol.includes('/') ? 'FX/CRYPTO' : 'DEFI'}</span></td>
+          <td><b>${r.symbol}</b></td>
+          <td><span class="badge ${dirClass}">${r.direction}</span></td>
+          <td>$${parseFloat(r.executed_price).toLocaleString('en-US', { minimumFractionDigits: 4 })}</td>
+          <td>${parseFloat(r.executed_units).toFixed(4)}</td>
+          <td>$${parseFloat(r.fees_incurred).toFixed(4)}</td>
+          <td><span style="color: var(--text-muted);">${r.venue}</span></td>
+          <td><span style="color: var(--neon-green); font-weight:700;">✓ RECONCILED [OK]</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    let selectedOrderDirection = 'BUY';
+
+    function openOrderModal() {
+      playBeep('click');
+      document.getElementById('orderModal').style.display = 'flex';
+    }
+
+    function closeOrderModal() {
+      playBeep('click');
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    function selectDirection(dir) {
+      playBeep('click');
+      selectedOrderDirection = dir;
+      const btnBuy = document.getElementById('btnBuy');
+      const btnSell = document.getElementById('btnSell');
+      if (dir === 'BUY') {
+        btnBuy.classList.add('active');
+        btnSell.classList.remove('active');
+      } else {
+        btnSell.classList.add('active');
+        btnBuy.classList.remove('active');
+      }
+    }
+
+    async function submitManualOrder() {
+      playBeep('click');
+      const symbolSel = document.getElementById('orderSymbol');
+      const symbol = symbolSel.value;
+      const market = symbolSel.selectedOptions[0].getAttribute('data-market');
+      const amount = parseFloat(document.getElementById('orderAmount').value);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast('Please enter a valid amount.');
+        return;
+      }
+
+      appendTerminalLog('OPERATOR', `Submitting manual ${selectedOrderDirection} order for ${symbol} ($${amount})...`);
+
+      try {
+        const res = await fetch('/api/manual-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            symbol: symbol,
+            market: market,
+            direction: selectedOrderDirection,
+            amount: amount
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.detail || 'Execution failed');
+        }
+
+        const data = await res.json();
+        playBeep('success');
+        showToast(`Order Executed: ${selectedOrderDirection} ${symbol}!`);
+        appendTerminalLog('BROKER', `Manual order filled! Receipt: ${data.receipt.receipt_id} (${data.receipt.executed_units} units @ $${data.receipt.executed_price})`);
+
+        closeOrderModal();
+        refreshStatus();
+      } catch (err) {
+        playBeep('alert');
+        alert('Order execution rejected: ' + err.message);
+        appendTerminalLog('GOVERNOR', `Order rejected: ${err.message}`);
+      }
+    }
+
+    function openDepositModal() {
+      playBeep('click');
+      document.getElementById('depositModal').style.display = 'flex';
+    }
+
+    function closeDepositModal() {
+      playBeep('click');
+      document.getElementById('depositModal').style.display = 'none';
+    }
+
+    async function submitDeposit() {
+      playBeep('click');
+      const curr = document.getElementById('depositCurr').value;
+      const amount = parseFloat(document.getElementById('depositAmount').value);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast('Please enter a valid deposit amount.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/deposit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            currency: curr,
+            amount: amount
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.detail || 'Deposit failed');
+        }
+
+        const data = await res.json();
+        playBeep('success');
+        showToast(`Deposited ${data.currency} ${parseFloat(data.deposited).toLocaleString()} to Vault!`);
+        appendTerminalLog('LEDGER', `Capital injected: ${data.currency} ${data.deposited} into Account Main.`);
+
+        closeDepositModal();
+        refreshStatus();
+      } catch (err) {
+        playBeep('alert');
+        alert('Deposit rejected: ' + err.message);
+      }
+    }
+
+    async function loadPositions() {
+      try {
+        const res = await fetch('/api/positions');
+        const data = await res.json();
+
+        const closedRes = await fetch('/api/closed-positions');
+        const closedData = await closedRes.json();
+
+        // Update badges
+        const openBadge = document.getElementById('openCountBadge');
+        if (openBadge) openBadge.innerText = `${data.count} POSITIONS ACTIVE`;
+        const navPos = document.getElementById('navPosCount');
+        if (navPos) navPos.innerText = `${data.count} Open`;
+
+        const floatBadge = document.getElementById('floatingPnlBadge');
+        if (floatBadge) {
+          const pnlVal = data.total_unrealized_pnl;
+          const sign = pnlVal >= 0 ? '+' : '';
+          floatBadge.innerText = `Floating PnL: ${sign}$${pnlVal.toFixed(2)}`;
+          floatBadge.style.color = pnlVal >= 0 ? 'var(--neon-green)' : 'var(--neon-red)';
+        }
+
+        const realBadge = document.getElementById('realizedPnlBadge');
+        if (realBadge) {
+          const rVal = closedData.total_realized_pnl || 0.0;
+          const sign = rVal >= 0 ? '+' : '';
+          realBadge.innerText = `Realized: ${sign}$${rVal.toFixed(2)} (${closedData.win_rate_pct || 0}% WR)`;
+          realBadge.style.color = rVal >= 0 ? 'var(--neon-green)' : 'var(--neon-red)';
+        }
+
+        const tbody = document.getElementById('positionsTable');
+        if (!tbody) return;
+
+        if (!data.open_positions || data.open_positions.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                No active open positions. Execute an AIA proposal or click <b>"➕ New Order"</b> to open a position.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = '';
+        data.open_positions.forEach(p => {
+          const tr = document.createElement('tr');
+          const isBuy = p.direction === 'BUY';
+          const dirClass = isBuy ? 'badge-dir-buy' : 'badge-dir-sell';
+          const pnlColor = p.unrealized_pnl >= 0 ? 'var(--neon-green)' : 'var(--neon-red)';
+          const pnlSign = p.unrealized_pnl >= 0 ? '+' : '';
+
+          tr.innerHTML = `
+            <td><span style="font-weight:700; color:var(--neon-cyan);">${p.position_id}</span></td>
+            <td><span class="badge badge-cyan">${p.market}</span></td>
+            <td><b style="cursor: pointer; color: var(--neon-cyan); text-decoration: underline;" onclick="switchChart('${p.symbol}')" title="Click to view Live Chart">${p.symbol}</b></td>
+            <td><span class="badge ${dirClass}">${p.direction}</span></td>
+            <td>$${p.entry_price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td>$${p.current_price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td>$${p.invested_principal.toFixed(2)}</td>
+            <td><b style="color: ${pnlColor};">${pnlSign}$${p.unrealized_pnl.toFixed(2)} (${pnlSign}${p.pnl_pct}%)</b></td>
+            <td>
+              <button class="btn-close-pos" onclick="closePosition('${p.position_id}', '${p.symbol}')">
+                🔴 Close & Take Profit
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Failed to load positions:', err);
+      }
+    }
+
+    async function closePosition(positionId, symbol) {
+      playBeep('click');
+      appendTerminalLog('OPERATOR', `Initiating Take Profit / Close for position ${positionId} (${symbol})...`);
+
+      try {
+        const res = await fetch(`/api/close-position/${positionId}`, { method: 'POST' });
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.detail || 'Failed to close position');
+        }
+
+        const data = await res.json();
+        const r = data.result;
+        playBeep('success');
+
+        const pnlSign = r.realized_pnl >= 0 ? '+' : '';
+        showToast(`Position ${symbol} Closed! Realized PnL: ${pnlSign}$${r.realized_pnl.toFixed(2)}`);
+        appendTerminalLog('BROKER', `Position ${positionId} closed at $${r.exit_price}. Realized PnL: ${pnlSign}$${r.realized_pnl.toFixed(2)} credited back to Ledger.`);
+
+        refreshStatus();
+        loadPositions();
+        loadReconciliation();
+      } catch (err) {
+        playBeep('alert');
+        alert('Close position failed: ' + err.message);
+        appendTerminalLog('GOVERNOR', `Close position error: ${err.message}`);
+      }
+    }
+
+    // AIA Interactive Chat Assistant Functions
+    function toggleKeyBar() {
+      playBeep('click');
+      const bar = document.getElementById('geminiKeyBar');
+      if (bar) bar.style.display = bar.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function saveGeminiKey() {
+      const input = document.getElementById('inputGeminiKey');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        alert('Sila masukkan API key Google Gemini.');
+        return;
+      }
+      const statusEl = document.getElementById('keySaveStatus');
+      if (statusEl) {
+        statusEl.innerText = 'Menyimpan & mengesahkan API key...';
+        statusEl.style.color = 'var(--neon-cyan)';
+      }
+
+      try {
+        const res = await fetch('/api/save-ai-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: val })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Gagal menyimpan');
+
+        if (statusEl) {
+          statusEl.innerText = '✅ ' + data.message;
+          statusEl.style.color = 'var(--neon-green)';
+        }
+        playBeep('success');
+        showToast('Otak AI Gemini Berjaya Diaktifkan!');
+        setTimeout(() => {
+          toggleKeyBar();
+        }, 1500);
+      } catch (err) {
+        if (statusEl) {
+          statusEl.innerText = '❌ ' + err.message;
+          statusEl.style.color = 'var(--neon-red)';
+        }
+      }
+    }
+
+    function toggleChatDrawer() {
+      playBeep('click');
+      const drawer = document.getElementById('chatDrawer');
+      if (!drawer) return;
+      const isOpen = drawer.classList.toggle('open');
+      if (isOpen) {
+        setTimeout(() => {
+          const input = document.getElementById('chatInput');
+          if (input) input.focus();
+        }, 150);
+      }
+    }
+
+    function clearChatHistory() {
+      playBeep('click');
+      const box = document.getElementById('chatMessages');
+      if (box) {
+        box.innerHTML = `
+          <div class="chat-bubble bot">
+            <b>Perbualan dikosongkan.</b> Sila ajukan soalan anda kepada AIA:
+          </div>
+          <div class="chat-chips-tray">
+            <div class="chat-chip" onclick="sendQuickPrompt('Berapa baki duit & untung kita sekarang?')">💵 Berapa baki & untung?</div>
+            <div class="chat-chip" onclick="sendQuickPrompt('Adakah selamat duit kita daripada lebur?')">🛡️ Selamat ke modal kita?</div>
+            <div class="chat-chip" onclick="sendQuickPrompt('Macam mana bot ni jana keuntungan?')">📈 Cara bot buat duit</div>
+            <div class="chat-chip" onclick="sendQuickPrompt('Apa fungsi butang Emergency Kill Switch?')">🛑 Apa tu Kill Switch?</div>
+          </div>
+        `;
+      }
+    }
+
+    function sendQuickPrompt(text) {
+      const input = document.getElementById('chatInput');
+      if (input) input.value = text;
+      sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+
+      playBeep('click');
+      input.value = '';
+
+      const box = document.getElementById('chatMessages');
+      if (!box) return;
+
+      // Append User Bubble
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chat-bubble user';
+      userDiv.innerText = text;
+      box.appendChild(userDiv);
+
+      // Append Loading / Thinking Indicator
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'chat-bubble bot';
+      loadingDiv.id = 'chatLoadingBubble';
+      loadingDiv.innerHTML = '<i>⚡ AIA sedang menyemak lejar & menganalisis pasaran...</i>';
+      box.appendChild(loadingDiv);
+      box.scrollTop = box.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+
+        if (!res.ok) {
+          if (res.status === 404) {
+            throw new Error('Pelayan VPS sedang menjalankan versi lama (404). Sila jalankan ./start.sh di terminal VPS untuk memuatkan enjin AIA.');
+          }
+          throw new Error(`Pelayan tidak dapat menjawab (HTTP ${res.status})`);
+        }
+        const data = await res.json();
+
+        loadingDiv.remove();
+        playBeep('success');
+
+        const botDiv = document.createElement('div');
+        botDiv.className = 'chat-bubble bot';
+        
+        let formatted = data.reply
+          .replace(/\n\n/g, '<br><br>')
+          .replace(/\n/g, '<br>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        botDiv.innerHTML = formatted;
+        box.appendChild(botDiv);
+        box.scrollTop = box.scrollHeight;
+      } catch (err) {
+        if (loadingDiv) loadingDiv.remove();
+        playBeep('alert');
+        const errDiv = document.createElement('div');
+        errDiv.className = 'chat-bubble bot';
+        errDiv.innerHTML = `<span style="color: var(--neon-red);">⚠️ Ralat: ${err.message}</span>`;
+        box.appendChild(errDiv);
+        box.scrollTop = box.scrollHeight;
+      }
+    }
+
+    // Restore workspace from URL hash or default to trading
+    const initialHash = window.location.hash.replace('#', '');
+    if (initialHash && ['trading', 'brain', 'teacher', 'treasury'].includes(initialHash)) {
+      switchWorkspace(initialHash);
+    } else {
+      switchWorkspace('trading');
+    }
+
+    // MT5 Demo Integration Functions
+    function openMT5Modal() {
+      playBeep('click');
+      loadMT5Status();
+      const m = document.getElementById('mt5Modal');
+      if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+      }
+    }
+
+    function closeMT5Modal() {
+      playBeep('click');
+      const m = document.getElementById('mt5Modal');
+      if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+      }
+    }
+
+    async function loadMT5Status() {
+      try {
+        const res = await fetch('/api/mt5/status');
+        if (!res.ok) return;
+        const d = await res.json();
+
+        const badge = document.getElementById('mt5StatusPill');
+        const badgeText = document.getElementById('mt5BadgeText');
+        const connStatus = document.getElementById('mt5ConnectionStatus');
+
+        if (d.connected) {
+          if (badge) {
+            badge.style.background = 'rgba(16, 185, 129, 0.15)';
+            badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            badge.style.color = 'var(--neon-green)';
+          }
+          if (badgeText) {
+            badgeText.innerText = `MT5: ${d.login} (${d.currency} ${d.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })})`;
+          }
+          if (connStatus) {
+            connStatus.innerText = `TERSAMBUNG KE ${d.server.toUpperCase()}`;
+            connStatus.style.color = 'var(--neon-green)';
+          }
+        } else {
+          if (badge) {
+            badge.style.background = 'rgba(244, 63, 94, 0.12)';
+            badge.style.borderColor = 'rgba(244, 63, 94, 0.3)';
+            badge.style.color = 'var(--neon-red)';
+          }
+          if (badgeText) {
+            badgeText.innerText = `MT5: TIDAK TERSAMBUNG`;
+          }
+          if (connStatus) {
+            connStatus.innerText = d.last_error ? `RALAT: ${d.last_error}` : 'TERPUTUS';
+            connStatus.style.color = 'var(--neon-red)';
+          }
+        }
+
+        const nameEl = document.getElementById('mt5AccName');
+        if (nameEl) nameEl.innerText = d.name || 'Fauzan Azhari';
+
+        const loginEl = document.getElementById('mt5AccLogin');
+        if (loginEl) loginEl.innerText = `${d.login} (${d.server})`;
+
+        const balEl = document.getElementById('mt5Balance');
+        if (balEl) balEl.innerText = `${d.currency} ${parseFloat(d.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+        const eqEl = document.getElementById('mt5Equity');
+        if (eqEl) eqEl.innerText = `${d.currency} ${parseFloat(d.equity).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+        const countEl = document.getElementById('mt5PosCount');
+        if (countEl) countEl.innerText = `${d.open_positions_count || 0} Posisi`;
+
+        const posBox = document.getElementById('mt5PositionsContainer');
+        if (posBox) {
+          if (!d.open_positions || d.open_positions.length === 0) {
+            posBox.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 12px;">Tiada posisi terbuka sekarang.</div>';
+          } else {
+            let html = '<table style="width: 100%; border-collapse: collapse; font-size: 11px;">';
+            html += '<thead><tr style="color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); text-align: left;">';
+            html += '<th style="padding: 4px;">Ticket</th><th>Symbol</th><th>Side</th><th>Lots</th><th>Open</th><th>Current</th><th>Profit</th><th>Action</th></tr></thead><tbody>';
+            for (const p of d.open_positions) {
+              const isProfit = p.profit >= 0;
+              const color = isProfit ? 'var(--neon-green)' : 'var(--neon-red)';
+              const sideColor = p.direction === 'BUY' ? 'var(--neon-green)' : 'var(--neon-red)';
+              html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                <td style="padding: 6px 4px; font-family: var(--font-mono);">${p.ticket}</td>
+                <td style="font-weight: 700;">${p.symbol}</td>
+                <td style="color: ${sideColor}; font-weight: 700;">${p.direction}</td>
+                <td>${p.volume}</td>
+                <td style="font-family: var(--font-mono);">${p.price_open}</td>
+                <td style="font-family: var(--font-mono);">${p.price_current}</td>
+                <td style="font-family: var(--font-mono); font-weight: 700; color: ${color};">${p.profit > 0 ? '+' : ''}${p.profit.toFixed(2)}</td>
+                <td><button class="btn btn-kill" style="padding: 3px 8px; font-size: 10px;" onclick="closeMT5Order(${p.ticket})">Close</button></td>
+              </tr>`;
+            }
+            html += '</tbody></table>';
+            posBox.innerHTML = html;
+          }
+        }
+      } catch (err) {
+        console.error('Error loading MT5 status:', err);
+      }
+    }
+
+    async function executeMT5Trade(direction) {
+      const sym = document.getElementById('mt5TradeSymbol').value;
+      const lots = parseFloat(document.getElementById('mt5TradeLots').value) || 0.1;
+      playBeep('click');
+      try {
+        showToast(`Menghantar pesanan ${direction} ${lots} lot ${sym} ke MT5...`);
+        const res = await fetch('/api/mt5/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symbol: sym, direction: direction, volume: lots })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Gagal menghantar order');
+        playBeep('success');
+        showToast(`🎉 Order MT5 Berjaya! Ticket #${data.order_id || data.ticket} pada harga ${data.price}`);
+        appendTerminalLog('MT5_EXEC', `Order ${direction} ${lots} ${sym} filled at ${data.price}`);
+        loadMT5Status();
+      } catch (err) {
+        playBeep('alert');
+        showToast(`⚠️ Ralat MT5: ${err.message}`);
+      }
+    }
+
+    async function closeMT5Order(ticket) {
+      playBeep('click');
+      try {
+        showToast(`Menutup posisi #${ticket} di MT5...`);
+        const res = await fetch('/api/mt5/close', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ticket: ticket })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Gagal menutup posisi');
+        playBeep('success');
+        showToast(`Posisi #${ticket} berjaya ditutup.`);
+        loadMT5Status();
+      } catch (err) {
+        playBeep('alert');
+        showToast(`⚠️ Ralat Tutup MT5: ${err.message}`);
+      }
+    }
+
+    async function reconnectMT5Account() {
+      const login = parseInt(document.getElementById('mt5InputLogin').value);
+      const password = document.getElementById('mt5InputPassword').value;
+      const server = document.getElementById('mt5InputServer').value;
+      playBeep('click');
+      try {
+        showToast(`Menghubungkan ke akaun MT5 ${login} (${server})...`);
+        const res = await fetch('/api/mt5/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login: login, password: password, server: server })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Gagal menyambung ke MT5');
+        playBeep('success');
+        showToast(`🎉 ${data.message}`);
+        loadMT5Status();
+      } catch (err) {
+        playBeep('alert');
+        showToast(`⚠️ Ralat Sambungan MT5: ${err.message}`);
+      }
+    }
+
+    // Web3 MetaMask Integration Functions
+    let web3State = {
+      connected: false,
+      address: '',
+      chainId: '0xa4b1',
+      chainName: 'Arbitrum One',
+      balanceEth: 0.0
+    };
+
+    const CHAIN_NAMES = {
+      '0x1': 'Ethereum Mainnet',
+      '0xa4b1': 'Arbitrum One',
+      '0x89': 'Polygon POS',
+      '0x2105': 'Base',
+      '0xaa36a7': 'Sepolia Testnet',
+      '1': 'Ethereum Mainnet',
+      '42161': 'Arbitrum One',
+      '137': 'Polygon POS',
+      '8453': 'Base',
+      '11155111': 'Sepolia Testnet'
+    };
+
+    async function checkWeb3BackendStatus() {
+      try {
+        const res = await fetch('/api/web3/status');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.connected && data.address) {
+          web3State = {
+            connected: true,
+            address: data.address,
+            chainId: data.chain_id || '0xa4b1',
+            chainName: data.chain_name || 'Arbitrum One',
+            balanceEth: data.balance_eth || 0.0
+          };
+          updateMetaMaskUI();
+        }
+      } catch (e) {
+        console.error('Failed to check web3 status:', e);
+      }
+    }
+
+    function handleMetaMaskClick() {
+      playBeep('click');
+      if (web3State.connected) {
+        openMetaMaskModal();
+      } else {
+        connectMetaMask();
+      }
+    }
+
+    function openMetaMaskModal() {
+      playBeep('click');
+      const m = document.getElementById('metamaskModal');
+      if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+      }
+      updateMetaMaskUI();
+    }
+
+    function closeMetaMaskModal() {
+      playBeep('click');
+      const m = document.getElementById('metamaskModal');
+      if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+      }
+    }
+
+    async function connectMetaMask() {
+      playBeep('click');
+      if (typeof window.ethereum === 'undefined') {
+        playBeep('alert');
+        showToast('⚠️ Extension MetaMask tidak dikesan.');
+        alert('MetaMask tidak dikesan pada pelayar ini!\n\nSila pasang extension MetaMask di Chrome / Brave / Edge (https://metamask.io) untuk menyambung dompet Web3 anda.');
+        return;
+      }
+
+      try {
+        showToast('🦊 Menyambung ke MetaMask...');
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (!accounts || accounts.length === 0) {
+          throw new Error('Tiada akaun dipilih di MetaMask.');
+        }
+
+        const address = accounts[0];
+        let chainId = '0xa4b1';
+        try {
+          chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        } catch (_) {}
+
+        let balanceEth = 0.0;
+        try {
+          const balHex = await window.ethereum.request({
+            method: 'eth_getBalance',
+            params: [address, 'latest']
+          });
+          balanceEth = parseInt(balHex, 16) / 1e18;
+        } catch (_) {}
+
+        const chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
+
+        web3State = {
+          connected: true,
+          address: address,
+          chainId: chainId,
+          chainName: chainName,
+          balanceEth: balanceEth
+        };
+
+        // Sync to Aurex Backend
+        await fetch('/api/web3/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            address: address,
+            chain_id: chainId,
+            balance_eth: balanceEth
+          })
+        });
+
+        updateMetaMaskUI();
+        playBeep('success');
+        showToast(`🦊 MetaMask Berjaya Disambungkan: ${address.slice(0, 6)}...${address.slice(-4)}`);
+        appendTerminalLog('WEB3', `Connected MetaMask: ${address} on ${chainName} (${balanceEth.toFixed(4)} ETH)`);
+        openMetaMaskModal();
+
+      } catch (err) {
+        playBeep('alert');
+        showToast(`⚠️ Ralat MetaMask: ${err.message || 'Sambungan dibatalkan'}`);
+        console.error('MetaMask connection error:', err);
+      }
+    }
+
+    async function switchChain(targetChainIdHex) {
+      playBeep('click');
+      if (typeof window.ethereum === 'undefined') {
+        showToast('⚠️ Extension MetaMask tidak tersedia.');
+        return;
+      }
+      try {
+        showToast('Menukar rangkaian Web3...');
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: targetChainIdHex }]
+        });
+        web3State.chainId = targetChainIdHex;
+        web3State.chainName = CHAIN_NAMES[targetChainIdHex] || `Chain ${targetChainIdHex}`;
+
+        try {
+          const balHex = await window.ethereum.request({
+            method: 'eth_getBalance',
+            params: [web3State.address, 'latest']
+          });
+          web3State.balanceEth = parseInt(balHex, 16) / 1e18;
+        } catch (_) {}
+
+        await fetch('/api/web3/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            address: web3State.address,
+            chain_id: web3State.chainId,
+            balance_eth: web3State.balanceEth
+          })
+        });
+
+        updateMetaMaskUI();
+        playBeep('success');
+        showToast(`Rangkaian ditukar ke ${web3State.chainName}`);
+      } catch (err) {
+        playBeep('alert');
+        showToast(`Gagal menukar rangkaian: ${err.message}`);
+      }
+    }
+
+    async function disconnectMetaMask() {
+      playBeep('click');
+      try {
+        await fetch('/api/web3/disconnect', { method: 'POST' });
+      } catch (_) {}
+
+      web3State = {
+        connected: false,
+        address: '',
+        chainId: '0xa4b1',
+        chainName: 'Arbitrum One',
+        balanceEth: 0.0
+      };
+
+      updateMetaMaskUI();
+      closeMetaMaskModal();
+      showToast('MetaMask diputuskan sambungan.');
+      appendTerminalLog('WEB3', 'MetaMask wallet disconnected.');
+    }
+
+    function copyWalletAddress() {
+      if (!web3State.address) return;
+      navigator.clipboard.writeText(web3State.address).then(() => {
+        playBeep('click');
+        showToast('📋 Alamat dompet disalin ke papan klip!');
+      }).catch(() => {
+        prompt('Salin alamat dompet anda:', web3State.address);
+      });
+    }
+
+    function updateMetaMaskUI() {
+      const pill = document.getElementById('metamaskStatusPill');
+      const badgeText = document.getElementById('metamaskBadgeText');
+      const modalAddr = document.getElementById('mmFullAddress');
+      const modalNet = document.getElementById('mmNetworkName');
+      const modalBal = document.getElementById('mmEthBalance');
+      const modalStatus = document.getElementById('mmModalStatusText');
+
+      if (web3State.connected && web3State.address) {
+        const short = `${web3State.address.slice(0, 6)}...${web3State.address.slice(-4)}`;
+        if (pill) {
+          pill.style.background = 'rgba(16, 185, 129, 0.15)';
+          pill.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+          pill.style.color = 'var(--neon-green)';
+        }
+        if (badgeText) {
+          badgeText.innerText = `🦊 ${short} (${web3State.balanceEth.toFixed(3)} ETH)`;
+        }
+        if (modalAddr) modalAddr.innerText = web3State.address;
+        if (modalNet) modalNet.innerText = web3State.chainName;
+        if (modalBal) modalBal.innerText = `${web3State.balanceEth.toFixed(4)} ETH`;
+        if (modalStatus) {
+          modalStatus.innerText = `TERHUBUNG DENGAN AKAUN AKTIF (${web3State.chainName.toUpperCase()})`;
+          modalStatus.style.color = 'var(--neon-green)';
+        }
+      } else {
+        if (pill) {
+          pill.style.background = 'rgba(246, 133, 27, 0.12)';
+          pill.style.borderColor = 'rgba(246, 133, 27, 0.35)';
+          pill.style.color = '#f6851b';
+        }
+        if (badgeText) {
+          badgeText.innerText = 'Sambung MetaMask';
+        }
+        if (modalAddr) modalAddr.innerText = '0x... (Tiada sambungan)';
+        if (modalNet) modalNet.innerText = '-';
+        if (modalBal) modalBal.innerText = '0.0000 ETH';
+        if (modalStatus) {
+          modalStatus.innerText = 'BELUM DISAMBUNG';
+          modalStatus.style.color = '#f6851b';
+        }
+      }
+    }
+
+    // Listen to MetaMask provider events if present
+    if (typeof window !== 'undefined' && window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (!accounts || accounts.length === 0) {
+          disconnectMetaMask();
+        } else {
+          web3State.address = accounts[0];
+          connectMetaMask();
+        }
+      });
+
+      window.ethereum.on('chainChanged', (chainId) => {
+        web3State.chainId = chainId;
+        web3State.chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
+        updateMetaMaskUI();
+      });
+    }
+
+    connectMarketWebSocket();
+
+    // Auto-refresh every 5 seconds
+    refreshStatus();
+    loadMT5Status();
+    checkWeb3BackendStatus();
+    setInterval(refreshStatus, 5000);
+    setInterval(loadMT5Status, 4000);
+  </script>
+</body>
+</html>
