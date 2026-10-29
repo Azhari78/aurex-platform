@@ -73,8 +73,8 @@ class CryptoTradingEngine(BaseSpecialistEngine):
             else:
                 continue
 
-            # Fee and slippage calculation
-            principal = Decimal("200.00")
+            # Fee and slippage calculation (Scalper Lot Size: $1,500 per position)
+            principal = Decimal("1500.00")
             taker_fee = principal * Decimal("0.001")  # 0.10% taker fee
             slippage = principal * Decimal("0.0005")  # 0.05% slippage allowance
             total_budget = principal + taker_fee + slippage

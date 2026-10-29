@@ -46,11 +46,11 @@ class FXTradingEngine(BaseSpecialistEngine):
         for pair in self._universe:
             current_rate = self._rates.get(pair, Decimal("1.0000"))
 
-            # Momentum signal analysis
+            # Momentum signal analysis (Forex Standard Sizing: $1,200 per position)
             spread_pips = Decimal("0.00015") if "JPY" not in pair else Decimal("0.015")
-            principal = Decimal("150.00")
-            commission = Decimal("0.05")
-            slippage = Decimal("0.05")
+            principal = Decimal("1200.00")
+            commission = Decimal("0.30")
+            slippage = Decimal("0.30")
             total_budget = principal + commission + slippage
 
             budget = Budget(

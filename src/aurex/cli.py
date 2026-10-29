@@ -40,8 +40,9 @@ def setup_system():
     ledger.deposit("account_main", "MYR", Decimal("25000.00"), reference="INITIAL_FUNDING_MYR")
 
     governor = GlobalGovernor(ledger=ledger, live_authorized=False)
+    governor.high_risk_threshold_usd = Decimal("5000.00")
     identity = IdentityManager()
-    risk = RiskManager(portfolio_capital=Decimal("10000.00"))
+    risk = RiskManager(portfolio_capital=Decimal("50000.00"))
     economics = EconomicsAuthority()
     eig = ExternalIntelligenceGateway()
 

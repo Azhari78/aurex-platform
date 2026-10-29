@@ -36,8 +36,8 @@ class DeFiEngine(BaseSpecialistEngine):
     def scan_opportunities(self) -> List[Opportunity]:
         opportunities = []
 
-        # 1. High yield stable lending on Arbitrum (low gas)
-        principal = Decimal("300.00")
+        # 1. High yield stable lending on Arbitrum (low gas) - Allocation: $1,000
+        principal = Decimal("1000.00")
         gas_cost = Decimal("0.35")  # ~$0.35 L2 gas
         total_budget = principal + gas_cost
 
