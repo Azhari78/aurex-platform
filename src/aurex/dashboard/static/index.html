@@ -3294,11 +3294,13 @@
 
     connectMarketWebSocket();
 
-    // Auto-refresh every 5 seconds
+    // Auto-refresh real-time live trading loops
     refreshStatus();
+    loadPositions();
     loadMT5Status();
     checkWeb3BackendStatus();
-    setInterval(refreshStatus, 5000);
+    setInterval(refreshStatus, 4000);
+    setInterval(loadPositions, 2000);
     setInterval(loadMT5Status, 4000);
   </script>
 </body>
