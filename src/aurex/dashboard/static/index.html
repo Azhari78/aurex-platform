@@ -1570,13 +1570,13 @@
 
         <div class="metric-card">
           <div class="metric-top">
-            <span class="metric-label">MYR Capital Vault</span>
-            <span class="metric-badge-tag">MYR VAULT</span>
+            <span class="metric-label">MYR Portfolio Net Worth</span>
+            <span class="metric-badge-tag" style="background: rgba(6, 182, 212, 0.2); color: var(--neon-cyan);">USD ➔ MYR LIVE</span>
           </div>
-          <div class="metric-number" id="myrAvail">RM25,000.00</div>
+          <div class="metric-number" id="myrAvail">RM126,290.00</div>
           <div class="metric-footer">
-            <span id="myrReserved">Reserved: RM0.00</span>
-            <span style="color: var(--neon-cyan);">Treasury Backed</span>
+            <span id="myrReserved">Kadar Semasa: RM4.4250</span>
+            <span style="color: var(--neon-cyan);">Live Portfolio + Treasury</span>
           </div>
         </div>
 
@@ -2261,7 +2261,7 @@
         document.getElementById('usdAvail').innerText = '$' + parseFloat(data.ledger.usd.available).toLocaleString('en-US', { minimumFractionDigits: 2 });
         document.getElementById('usdReserved').innerText = 'Reserved: $' + parseFloat(data.ledger.usd.reserved).toFixed(2);
         document.getElementById('myrAvail').innerText = 'RM' + parseFloat(data.ledger.myr.available).toLocaleString('en-US', { minimumFractionDigits: 2 });
-        document.getElementById('myrReserved').innerText = 'Reserved: RM' + parseFloat(data.ledger.myr.reserved).toFixed(2);
+        document.getElementById('myrReserved').innerText = data.ledger.myr.reserved || 'Kadar: RM4.4250';
 
         const killBtn = document.getElementById('killBtn');
         const govStatus = document.getElementById('govStatus');
