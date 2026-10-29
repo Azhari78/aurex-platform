@@ -1,13 +1,13 @@
 [Unit]
-Description=AUREX Master Platform Trading Terminal
+Description=AUREX Master Platform 24/7 Autopilot Service
 After=network.target
 
 [Service]
 Type=simple
-User=root
-WorkingDirectory=/opt/aurex-master-platform
-Environment=PYTHONPATH=/opt/aurex-master-platform/src
-ExecStart=/opt/aurex-master-platform/venv/bin/python3 -m uvicorn aurex.dashboard.app:app --host 0.0.0.0 --port 8000
+User=dolafauzan_gmail_com
+WorkingDirectory=/home/dolafauzan_gmail_com/aurex-platform
+Environment=PYTHONPATH=/home/dolafauzan_gmail_com/aurex-platform/src
+ExecStart=/home/dolafauzan_gmail_com/aurex-platform/venv/bin/python3 -m uvicorn aurex.dashboard.app:app --host 0.0.0.0 --port 8000
 Restart=always
 RestartSec=5
 
